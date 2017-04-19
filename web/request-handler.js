@@ -7,8 +7,10 @@ exports.handleRequest = function (req, res) {
   // res.end(archive.paths.list);
 
   if (req.method === 'GET') {
-    console.log(req.method, req.url)
-    if (req.url === '/') req.url = '/index.html';
+    console.log(req.method, req.url);
+    if (req.url === '/') {
+      req.url = '/index.html';
+    }
     helpers.serveAssets(res, archive.paths.siteAssets + req.url, function (data) {
       res.writeHead(200, helpers.headers);
       res.end(data);

@@ -27,7 +27,11 @@ exports.handleRequest = function (req, res) {
     });
 
     req.on('end', function (data) {
-      console.log(JSON.stringify(body));
+      
+      archive.addUrlToList(body.split('=')[1], function() {
+        res.writeHead(302, helpers.headers);
+        res.end();       
+      });
     });
   }
 

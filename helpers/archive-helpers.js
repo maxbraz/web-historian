@@ -31,7 +31,7 @@ exports.readListOfUrls = (callback) => {
     if (err) {
       res.end();
     }
-    data = data.split('\n');
+    data = (data === '') ? [] : data.split('\n');
     callback(data);
   });
 
@@ -46,7 +46,7 @@ exports.isUrlInList = function(url, callback) {
 exports.addUrlToList = function(url, callback) {
   exports.readListOfUrls((urlArray) => {
     urlArray.push(url);
-    fs.writeFile(exports.paths.list, urlArray.join('\n'), callback);
+    fs.writeFile(exports.paths.list, urlArray.join('\n')+'\n', callback);
   });
 };
 

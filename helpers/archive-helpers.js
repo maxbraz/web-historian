@@ -47,7 +47,7 @@ exports.isUrlInList = function(url, callback) {
 exports.addUrlToList = function(url, callback) {
   exports.readListOfUrls((urlArray) => {
     urlArray.push(url);
-    fs.writeFile(exports.paths.list, urlArray.join('\n')+'\n', callback);
+    fs.writeFile(exports.paths.list, urlArray.join('\n') + '\n', callback);
   });
 };
 
@@ -56,7 +56,7 @@ exports.isUrlArchived = function(url, callback) {
     if (!err) {
       (files.indexOf(url) >= 0) ? callback(true) : callback(false);
     }
-  })
+  });
 };
 
 exports.downloadUrls = function(urls) {
@@ -66,5 +66,5 @@ exports.downloadUrls = function(urls) {
     request('http://' + url, function(err, res, body) {
       fs.writeFile(exports.paths.archivedSites + '/' + url, body, () =>{});
     });
-  })
+  });
 };

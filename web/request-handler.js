@@ -30,7 +30,7 @@ exports.handleRequest = function (req, res) {
       
       archive.addUrlToList(body.split('=')[1], function() {
         res.writeHead(302, helpers.headers);
-        res.end();       
+        res.end(data);       
       });
     });
   }

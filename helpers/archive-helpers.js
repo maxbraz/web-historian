@@ -27,16 +27,10 @@ exports.initialize = function(pathsObj) {
 
 exports.readListOfUrls = (callback) => {
 
-  console.log('** call readListOfUrls **');
-
   fs.readFile(exports.paths.list, 'utf-8', (err, data) => {
-    console.log('test', err, data);
     if (err) {
-      console.log('** problem reading sites.txt **');
-      // res.writeHead(404, exports.headers);
       res.end();
     }
-    console.log('** readListOfUrls: ', data);
     data = data.split('\n');
     callback(data);
   });
@@ -44,9 +38,16 @@ exports.readListOfUrls = (callback) => {
 };
 
 exports.isUrlInList = function(url, callback) {
+  exports.readListOfUrls((urlArray) => {
+    (urlArray.indexOf(url) >= 0) ? callback(true) : callback(false); 
+  });
 };
 
 exports.addUrlToList = function(url, callback) {
+  exports.readListOfUrls((urlArray) => {
+    urlArray.push(url);
+    fs.writeFile(exports.paths.list, urlArray.join('\n'), callback);
+  });
 };
 
 exports.isUrlArchived = function(url, callback) {

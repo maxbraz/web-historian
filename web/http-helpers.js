@@ -16,7 +16,9 @@ exports.serveAssets = function(res, asset, callback) {
   // css, or anything that doesn't change often.)
   fs.readFile(asset, 'utf-8', function(err, data) {
     if (err) {
-      throw err;
+      console.log('FILE NOT FOUND');
+      res.writeHead(404, exports.headers);
+      res.end();
     }
     callback(data);
   });

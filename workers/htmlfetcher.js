@@ -20,6 +20,6 @@ archive.readListOfUrls((allUrls) => {
         });
 
       }
-    })
-  })
+    });
+  });
 });

@@ -47,12 +47,12 @@ exports.isUrlInList = function(url, callback) {
 exports.addUrlToList = function(url, callback) {
   exports.readListOfUrls((urlArray) => {
     urlArray.push(url);
-    fs.writeFile(exports.paths.list, urlArray.join('\n') + '\n', callback);
+    fs.writeFile(exports.paths.list, urlArray.join('\n'), callback);
   });
 };
 
 exports.isUrlArchived = function(url, callback) {
-  let list = fs.readdir(exports.paths.archivedSites, function(err, files) {
+  fs.readdir(exports.paths.archivedSites, function(err, files) {
     if (!err) {
       (files.indexOf(url) >= 0) ? callback(true) : callback(false);
     }
@@ -64,7 +64,9 @@ exports.downloadUrls = function(urls) {
     // retrieve data/
     // save data to folder
     request('http://' + url, function(err, res, body) {
-      fs.writeFile(exports.paths.archivedSites + '/' + url, body, () =>{});
+      fs.writeFile(exports.paths.archivedSites + '/' + url, body, () =>{
+        console.log('download Url successful');
+      });
     });
   });
 };

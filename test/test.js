@@ -39,6 +39,8 @@ describe('server', function() {
         // Write data to the file.
         fs.writeFileSync(fixturePath, 'google');
 
+        console.log('**fixture: ', fixtureName, '**path', fixturePath);
+
         request
           .get('/' + fixtureName)
           .expect(200, /google/, function (err) {
@@ -66,7 +68,7 @@ describe('server', function() {
           .expect(302, function (err) {
             if (!err) {
               var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
-              expect(fileContents).to.equal(url + '\n');
+              expect(fileContents).to.equal(url);
             }
 
             done(err);

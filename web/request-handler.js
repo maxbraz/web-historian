@@ -11,12 +11,33 @@ exports.handleRequest = function (req, res) {
     if (req.url === '/') {
       req.url = '/index.html';
     }
-    helpers.serveAssets(res, archive.paths.siteAssets + req.url, function (data) {
-      res.writeHead(200, helpers.headers);
-      res.end(data);
+
+    archive.isUrlInList(req.url.slice(1), (isInList) => {
+      let url = req.url.slice(1);
+      
+      if (isInList) {
+        archive.isUrlArchived(url, (isArchived) => {
+
+          if (isArchived) {
+            helpers.serveAssets(res, archive.paths.archivedSites + '/' + url, (data) => {
+              res.writeHead(200, helpers.headers);
+              res.end(data);
+            });
+          } else {
+            helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', function (loadingData) {
+              res.writeHead(200, helpers.headers);
+              res.end(loadingData);
+            });
+          }
+        });
+      } else { // not in list
+        helpers.serveAssets(res, archive.paths.siteAssets + req.url, function (data) {
+          res.writeHead(200, helpers.headers);
+          res.end(data);
+        });
+      }
     });
-  } else {
-    // res.end();
+
   }
 
   if (req.method === 'POST') {
@@ -27,12 +48,43 @@ exports.handleRequest = function (req, res) {
     });
 
     req.on('end', function (data) {
-      
-      archive.addUrlToList(body.split('=')[1], function() {
-        res.writeHead(302, helpers.headers);
-        res.end(data);       
-      });
-    });
+      let url = body.split('=')[1];
+
+      if (url !== '') {
+
+        archive.isUrlInList(url, (isInList) => {
+  
+          if (isInList) {
+            archive.isUrlArchived(url, (isArchived) => {
+
+              if (isArchived) {
+                helpers.serveAssets(res, archive.paths.archivedSites + '/' + url, (data) => {
+                  res.writeHead(200, helpers.headers);
+                  res.end(data);
+                });
+              } else {
+                helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', function (loadingData) {
+                  res.writeHead(200, helpers.headers);
+                  res.end(loadingData);
+                });
+
+                // end of isAchived
+              }
+            });
+          } else {  // not in list
+            archive.addUrlToList(body.split('=')[1], function () {
+
+              helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', function (data) {
+                res.writeHead(302, helpers.headers);
+                res.end(data);
+              });
+
+            });
+          }  // end of not in list
+        });
+      }
+
+    });  // end of req.on
   }
 
 };
